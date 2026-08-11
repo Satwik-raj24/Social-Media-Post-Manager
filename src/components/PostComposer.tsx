@@ -145,6 +145,12 @@ export const PostComposerComponent: React.FC<PostComposerProps> = ({
       setError('Please select a valid date & time to schedule your post.');
       return;
     }
+    const now = new Date();
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    if (new Date(scheduledAt).getTime() < startOfToday) {
+      setError('Cannot schedule posts for past dates.');
+      return;
+    }
     if (validate()) {
       onSchedulePost();
     }
@@ -312,6 +318,11 @@ export const PostComposerComponent: React.FC<PostComposerProps> = ({
             id="schedule-time"
             type="datetime-local"
             className="url-input"
+            min={(() => {
+              const now = new Date();
+              const p = (n: number) => String(n).padStart(2, '0');
+              return `${now.getFullYear()}-${p(now.getMonth() + 1)}-${p(now.getDate())}T00:00`;
+            })()}
             disabled={isSaving || !canCreate}
             value={scheduledAt}
             onChange={(e) => {

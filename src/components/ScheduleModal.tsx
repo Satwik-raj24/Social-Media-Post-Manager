@@ -141,6 +141,12 @@ export const ScheduleModal: React.FC<ScheduleModalProps> = ({
       setError('Please specify a valid schedule date and time.');
       return false;
     }
+    const now = new Date();
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    if (new Date(datetime).getTime() < startOfToday) {
+      setError('Cannot schedule posts for past dates.');
+      return false;
+    }
     setError(null);
     return true;
   };
@@ -244,6 +250,11 @@ export const ScheduleModal: React.FC<ScheduleModalProps> = ({
                 id="modal-datetime"
                 type="datetime-local"
                 className="url-input"
+                min={(() => {
+                  const now = new Date();
+                  const p = (n: number) => String(n).padStart(2, '0');
+                  return `${now.getFullYear()}-${p(now.getMonth() + 1)}-${p(now.getDate())}T00:00`;
+                })()}
                 disabled={isSubmitting || !canCreate}
                 value={datetime}
                 onChange={(e) => {
@@ -353,7 +364,7 @@ export const ScheduleModal: React.FC<ScheduleModalProps> = ({
               className="btn btn-schedule"
               disabled={!content.trim() || isExceeded || isSubmitting || !canCreate || !datetime}
             >
-              {isSubmitting ? 'Scheduling...' : 'Schedule Post'}
+              {isSubmitting ? 'Submitting...' : 'Submit Post'}
             </button>
           </div>
         </form>

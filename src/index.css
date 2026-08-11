@@ -423,6 +423,17 @@ body {
   background: #eff6ff;
 }
 
+.calendar-day-cell.past-day {
+  background-color: #f8fafc;
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.calendar-day-cell.past-day:hover {
+  border-color: var(--border-color);
+  background-color: #f8fafc;
+}
+
 .day-number {
   display: flex;
   justify-content: space-between;
@@ -1086,13 +1097,21 @@ body {
   border-radius: 16px;
   width: 100%;
   max-width: 560px;
-  max-height: 90vh;
+  max-height: 85vh;
   display: flex;
   flex-direction: column;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   border: 1px solid rgba(226, 232, 240, 0.8);
   overflow: hidden;
   animation: modalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-card form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 @keyframes fadeIn {
@@ -1118,6 +1137,7 @@ body {
   padding: 18px 24px;
   border-bottom: 1px solid var(--border-color);
   background: linear-gradient(to right, #f8fafc, #ffffff);
+  flex-shrink: 0;
 }
 
 .modal-icon {
@@ -1161,6 +1181,8 @@ body {
 .modal-body {
   padding: 20px 24px;
   overflow-y: auto;
+  flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -1173,7 +1195,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 10px;
+  flex-shrink: 0;
 }
 
 /* Calendar Selected Date & Hover Schedule Button */

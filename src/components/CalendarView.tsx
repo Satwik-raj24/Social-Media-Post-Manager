@@ -64,6 +64,7 @@ export const CalendarViewComponent: React.FC<CalendarViewProps> = ({
   }, []);
 
   const now = new Date();
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
   const todayStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
 
   return (
@@ -107,6 +108,8 @@ export const CalendarViewComponent: React.FC<CalendarViewProps> = ({
         {Array.from({ length: daysInMonth }).map((_, idx) => {
           const dayNum = idx + 1;
           const dateStr = `${year}-${pad(month + 1)}-${pad(dayNum)}`;
+          const cellDate = new Date(year, month, dayNum).getTime();
+          const isPast = cellDate < startOfToday;
           const isToday = dateStr === todayStr;
           const isSelected = Boolean(selectedDateIso && selectedDateIso.startsWith(dateStr));
           const postsForDay = postsByDateMap[dateStr] || [];
@@ -114,19 +117,31 @@ export const CalendarViewComponent: React.FC<CalendarViewProps> = ({
           return (
             <div
               key={dayNum}
-              className={`calendar-day-cell ${isToday ? 'today' : ''} ${isSelected ? 'selected-date' : ''}`}
+              className={`calendar-day-cell ${isToday ? 'today' : ''} ${isSelected ? 'selected-date' : ''} ${
+                isPast ? 'past-day' : ''
+              }`}
               onClick={() => {
+                if (isPast) return;
                 const timeString = `${dateStr}T09:00`;
                 onSelectDate(timeString);
               }}
-              title={`Click date to schedule a post for ${dateStr}`}
+              title={
+                isPast
+                  ? `Past date (${dateStr}) - Scheduling is disabled`
+                  : `Click date to schedule a post for ${dateStr}`
+              }
             >
               <div className="day-number">
                 <span className="num-text">{dayNum}</span>
                 {postsForDay.length > 0 && (
                   <span className="day-count-badge">{postsForDay.length}</span>
                 )}
-                <span className="schedule-hover-btn">+ Schedule</span>
+                {!isPast && <span className="schedule-hover-btn">+ Schedule</span>}
+                {isPast && (
+                  <span className="past-day-tag" style={{ fontSize: '0.65rem', color: 'var(--text-muted)', opacity: 0.7 }}>
+                    Past
+                  </span>
+                )}
               </div>
 
               <div className="day-events-container">

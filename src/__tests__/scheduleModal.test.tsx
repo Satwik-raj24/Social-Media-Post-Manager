@@ -82,7 +82,7 @@ describe('ScheduleModal Component', () => {
     const textarea = screen.getByPlaceholderText(/What would you like to schedule/i);
     fireEvent.change(textarea, { target: { value: 'Exciting announcement #update' } });
 
-    const submitBtn = screen.getByRole('button', { name: /Schedule Post/i });
+    const submitBtn = screen.getByRole('button', { name: /Submit Post|Schedule Post/i });
     fireEvent.click(submitBtn);
 
     await waitFor(() => {

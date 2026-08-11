@@ -187,6 +187,11 @@ export const App: React.FC = () => {
   );
 
   const handleSelectCalendarDate = useCallback((dateIso: string) => {
+    const now = new Date();
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    if (new Date(dateIso).getTime() < startOfToday) {
+      return;
+    }
     setScheduledAt(dateIso);
     setScheduleModalDate(dateIso);
     

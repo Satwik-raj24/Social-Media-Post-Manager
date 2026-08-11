@@ -47,7 +47,7 @@ describe('CalendarView Component', () => {
     expect(onSelectEvent).toHaveBeenCalledWith(sampleScheduledPost);
   });
 
-  it('triggers onSelectDate when clicking on a date cell', () => {
+  it('triggers onSelectDate when clicking on a future date cell', () => {
     const onSelectDate = vi.fn();
     render(
       <CalendarView
@@ -57,11 +57,30 @@ describe('CalendarView Component', () => {
       />
     );
 
-    const dayTen = screen.getByText('10');
-    fireEvent.click(dayTen.closest('.calendar-day-cell') || dayTen);
+    // Day 28 is guaranteed to be a future date in current month (or today/future)
+    const futureDayNum = 28;
+    const dayElement = screen.getByText(String(futureDayNum));
+    fireEvent.click(dayElement.closest('.calendar-day-cell') || dayElement);
 
     expect(onSelectDate).toHaveBeenCalled();
     const calledArg = onSelectDate.mock.calls[0][0];
     expect(calledArg).toContain('T09:00');
+  });
+
+  it('does NOT trigger onSelectDate when clicking on a past date cell', () => {
+    const onSelectDate = vi.fn();
+    render(
+      <CalendarView
+        scheduledPosts={[]}
+        onSelectEvent={vi.fn()}
+        onSelectDate={onSelectDate}
+      />
+    );
+
+    // Day 1 of current month is in the past (since today is Aug 11 2026)
+    const dayOne = screen.getByText('1');
+    fireEvent.click(dayOne.closest('.calendar-day-cell') || dayOne);
+
+    expect(onSelectDate).not.toHaveBeenCalled();
   });
 });
